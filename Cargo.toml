@@ -1,0 +1,25 @@
+[package]
+name = "auth0-example-rs"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+anyhow = "1.0.68"
+askama = "0.11.1"
+async-lock = "2.6.0"
+async-session = "3.0.0"
+axum = { version = "0.6.1", features = ["headers"] }
+axum-extra = { version = "0.4.2", features = ["spa"] }
+dotenv = "0.15.0"
+envy = "0.4.2"
+headers = "0.3.8"
+openidconnect = { version = "2.4.0", features = ["accept-rfc3339-timestamps"] }
+percent-encoding = "2.2.0"
+reqwest = { version = "0.11.13", default-features = false, features = ["rustls-tls", "json"] }
+serde = { version = "1.0.152", features = ["derive"] }
+tokio = { version = "1.23.0", features = ["full"] }
+tower-http = { version = "0.3.5", features = ["trace"] }
+tracing = "0.1.37"
+tracing-subscriber = { version = "0.3.16", features = ["env-filter"] }
