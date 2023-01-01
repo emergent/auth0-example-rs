@@ -72,9 +72,6 @@ impl Authenticator {
     ) -> anyhow::Result<(AccessToken, Claims)> {
         let nonce = self.store.read().await.get(&state).cloned().unwrap();
 
-        tracing::debug!("{:?}", &self.store);
-        tracing::debug!("{:?}", state);
-
         // Get an auth token
         let token_response = self
             .client

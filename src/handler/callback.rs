@@ -16,7 +16,7 @@ pub struct AuthRequest {
     state: String,
 }
 
-#[instrument]
+#[instrument(skip(store, auth))]
 pub async fn callback(
     Query(query): Query<AuthRequest>,
     State(store): State<MemoryStore>,
