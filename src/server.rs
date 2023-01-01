@@ -72,6 +72,16 @@ impl FromRef<AppState> for MemoryStore {
     }
 }
 
+#[derive(thiserror::Error, Debug)]
+#[error(transparent)]
+pub struct InternalError(#[from] anyhow::Error);
+
+impl IntoResponse for InternalError {
+    fn into_response(self) -> Response {
+        Redirect::temporary("/").into_response()
+    }
+}
+
 pub struct AuthRedirect;
 
 impl IntoResponse for AuthRedirect {

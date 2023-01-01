@@ -136,6 +136,7 @@ dependencies = [
  "percent-encoding",
  "reqwest",
  "serde",
+ "thiserror",
  "tokio",
  "tower-http",
  "tracing",
