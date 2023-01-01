@@ -24,7 +24,6 @@ WORKDIR /work/
 COPY --from=builder /build/target/release/auth0-example-rs /work/
 COPY --from=builder /build/templates /work/templates
 COPY --from=builder /build/static /work/static
-COPY .env /work/.env
 
 EXPOSE 3000
 ENTRYPOINT [ "/work/auth0-example-rs" ]
