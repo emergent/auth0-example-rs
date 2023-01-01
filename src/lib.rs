@@ -10,5 +10,5 @@ pub struct Auth0Config {
     domain: String,
     client_id: String,
     client_secret: String,
-    audience: String,
+    base_url: String,
 }

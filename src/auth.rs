@@ -34,7 +34,7 @@ impl Authenticator {
             ClientId::new(config.client_id.clone()),
             Some(ClientSecret::new(config.client_secret.clone())),
         )
-        .set_redirect_uri(RedirectUrl::new(format!("{}/callback", config.audience))?);
+        .set_redirect_uri(RedirectUrl::new(format!("{}/callback", config.base_url))?);
 
         Ok(Self {
             config,
@@ -103,7 +103,7 @@ impl Authenticator {
         let logout_url = format!(
             "https://{}/v2/logout?returnTo={}&client_id={}",
             self.config.domain,
-            utf8_percent_encode(&self.config.audience, NON_ALPHANUMERIC),
+            utf8_percent_encode(&self.config.base_url, NON_ALPHANUMERIC),
             utf8_percent_encode(&self.config.client_id, NON_ALPHANUMERIC),
         );
 
