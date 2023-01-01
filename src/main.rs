@@ -3,6 +3,8 @@ use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
+    dotenv::dotenv().ok();
+
     tracing_subscriber::registry()
         .with(
             tracing_subscriber::EnvFilter::try_from_default_env()
@@ -11,7 +13,6 @@ async fn main() -> anyhow::Result<()> {
         .with(tracing_subscriber::fmt::layer())
         .init();
 
-    dotenv::dotenv().ok();
     let auth0_config = envy::prefixed("AUTH0_")
         .from_env::<Auth0Config>()
         .expect("failed getting envs of Auth0.");
