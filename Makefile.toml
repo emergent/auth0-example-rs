@@ -1,0 +1,31 @@
+[tasks.run]
+command = "cargo"
+args = ["run", "${@}"]
+
+[tasks.build]
+command = "cargo"
+args = ["build"]
+
+[tasks.build-release]
+command = "cargo"
+args = ["build", "--release"]
+
+### development
+
+[tasks.watch]
+run_task = [
+    { name = ["fmt", "test", "clippy"] }
+]
+watch = true
+
+[tasks.fmt]
+command = "cargo"
+args = ["fmt"]
+
+[tasks.clippy]
+command = "cargo"
+args = ["clippy"]
+
+[tasks.test]
+command = "cargo"
+args = ["test", "--", "--show-output"]
