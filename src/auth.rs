@@ -99,7 +99,7 @@ impl Authenticator {
         ))
     }
 
-    pub async fn logout_redirect_url(&self) -> anyhow::Result<Url> {
+    pub async fn logout_redirect_url(&self) -> Url {
         let logout_url = format!(
             "https://{}/v2/logout?returnTo={}&client_id={}",
             self.config.domain,
@@ -107,8 +107,7 @@ impl Authenticator {
             utf8_percent_encode(&self.config.client_id, NON_ALPHANUMERIC),
         );
 
-        let res = Url::parse(&logout_url)?;
-        Ok(res)
+        Url::parse(&logout_url).unwrap()
     }
 }
 
