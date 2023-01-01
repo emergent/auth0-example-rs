@@ -50,7 +50,8 @@ where
         let session = store
             .load_session(session_cookie.to_string())
             .await
-            .unwrap()
+            .ok()
+            .flatten()
             .ok_or(AuthRedirect)?;
 
         let profile = session.get::<Claims>("profile").ok_or(AuthRedirect)?;

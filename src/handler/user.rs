@@ -14,8 +14,8 @@ struct UserTemplate {
 #[instrument]
 pub async fn user(user: Profile) -> impl IntoResponse {
     let template = UserTemplate {
-        picture: user.picture().unwrap(),
-        nickname: user.nickname().unwrap(),
+        picture: user.picture().unwrap_or_default(),
+        nickname: user.nickname().unwrap_or_default(),
     };
 
     HtmlTemplate(template)

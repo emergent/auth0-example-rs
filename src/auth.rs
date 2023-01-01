@@ -1,10 +1,11 @@
 use crate::Auth0Config;
+use anyhow::Context;
 use async_lock::RwLock;
 use openidconnect::{
     core::{CoreAuthenticationFlow, CoreClient, CoreIdTokenClaims, CoreProviderMetadata},
     reqwest::async_http_client,
-    AccessTokenHash, AuthorizationCode, ClientId, ClientSecret, CsrfToken, IssuerUrl, Nonce,
-    OAuth2TokenResponse, RedirectUrl, Scope,
+    AuthorizationCode, ClientId, ClientSecret, CsrfToken, IssuerUrl, Nonce, OAuth2TokenResponse,
+    RedirectUrl, Scope,
 };
 use percent_encoding::{utf8_percent_encode, NON_ALPHANUMERIC};
 use serde::{Deserialize, Serialize};
@@ -70,31 +71,27 @@ impl Authenticator {
         state: String,
         code: String,
     ) -> anyhow::Result<(AccessToken, Claims)> {
-        let nonce = self.store.read().await.get(&state).cloned().unwrap();
+        let nonce = self
+            .store
+            .read()
+            .await
+            .get(&state)
+            .cloned()
+            .context("nonce not found.")?;
 
         // Get an auth token
         let token_response = self
             .client
             .exchange_code(AuthorizationCode::new(code))
             .request_async(async_http_client)
-            .await
-            .unwrap();
+            .await?;
 
         let id_token_verifier = self.client.id_token_verifier();
-        let id_token = token_response.extra_fields().id_token().unwrap();
-        let id_token_claims = id_token.claims(&id_token_verifier, &nonce).unwrap();
-
-        if let Some(expected_access_token_hash) = id_token_claims.access_token_hash() {
-            let actual = AccessTokenHash::from_token(
-                token_response.access_token(),
-                &id_token.signing_alg().unwrap(),
-            )
-            .unwrap();
-
-            if actual != *expected_access_token_hash {
-                panic!();
-            }
-        }
+        let id_token = token_response
+            .extra_fields()
+            .id_token()
+            .context("id_token not found.")?;
+        let id_token_claims = id_token.claims(&id_token_verifier, &nonce)?;
 
         Ok((
             AccessToken(token_response.access_token().clone()),
