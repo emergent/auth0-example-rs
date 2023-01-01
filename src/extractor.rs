@@ -14,8 +14,12 @@ pub struct Profile {
 }
 
 impl Profile {
-    pub fn profile(&self) -> &Claims {
-        &self.inner
+    pub fn picture(&self) -> Option<String> {
+        self.inner.picture()
+    }
+
+    pub fn nickname(&self) -> Option<String> {
+        self.inner.nickname()
     }
 }
 

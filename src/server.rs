@@ -1,15 +1,16 @@
 use crate::{auth::Authenticator, handler, Auth0Config};
 use async_session::MemoryStore;
 use axum::{
+    body::Bytes,
     extract::FromRef,
-    http::Request,
+    http::{HeaderMap, Request},
     response::{IntoResponse, Redirect, Response},
     routing::get,
     Router,
 };
 use axum_extra::routing::SpaRouter;
 use std::{net::SocketAddr, time::Duration};
-use tower_http::trace::TraceLayer;
+use tower_http::{classify::ServerErrorsFailureClass, trace::TraceLayer};
 use tracing::Span;
 
 pub const COOKIE_NAME: &str = "auth-session";
@@ -36,11 +37,25 @@ pub async fn start_server(config: Auth0Config) -> anyhow::Result<()> {
         .layer(
             TraceLayer::new_for_http()
                 .on_request(|_request: &Request<_>, _span: &Span| {
+                    println!("{:?}", _request);
                     tracing::info!("{:?}", _request);
                 })
                 .on_response(|_response: &Response, _latency: Duration, _span: &Span| {
                     tracing::info!("{:?} {:?}", _response, _latency);
-                }),
+                })
+                .on_body_chunk(|_chunk: &Bytes, _latency: Duration, _span: &Span| {
+                    // ..
+                })
+                .on_eos(
+                    |_trailers: Option<&HeaderMap>, _stream_duration: Duration, _span: &Span| {
+                        // ...
+                    },
+                )
+                .on_failure(
+                    |_error: ServerErrorsFailureClass, _latency: Duration, _span: &Span| {
+                        // ...
+                    },
+                ),
         );
 
     // run it

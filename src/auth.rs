@@ -128,3 +128,19 @@ impl AsRef<CoreIdTokenClaims> for Claims {
         &self.0
     }
 }
+
+impl Claims {
+    pub fn picture(&self) -> Option<String> {
+        self.0
+            .picture()
+            .and_then(|p| p.get(None))
+            .map(|url| url.to_string())
+    }
+
+    pub fn nickname(&self) -> Option<String> {
+        self.0
+            .nickname()
+            .and_then(|n| n.get(None))
+            .map(|n| n.to_string())
+    }
+}
